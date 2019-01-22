@@ -1,0 +1,55 @@
+<?php
+use Magento\Framework\App\Action\Action;
+
+$productCollection = $this->getToppicks();
+$imageBlock =  $block->getLayout()->createBlock('Magento\Catalog\Block\Product\ListProduct');
+$showCart = true;
+$type = 'widget-new-grid';
+$viewMode = 'grid'; 
+$image = 'category_page_grid';
+$pos = $block->getPositioned();
+$templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+?>
+<div class="pb-products-carousel pb-products-carousel-small">      
+  <div class="section-head">
+	<h2><?php echo __('Top Picks') ?></h2>
+	</div>
+	<div class="product-list carousel">
+		<div class="owl-carousel" id="owl-products-small">
+			<?php $iterator = 1; ?>
+			<?php foreach ($productCollection as $_product): ?>
+			<?php $productImage = $imageBlock->getImage($_product, 'category_page_grid'); 
+				if ($pos == null) {                                                        
+					$position = ' style="left:' . $productImage->getWidth() . 'px;'
+						. 'top:' . $productImage->getHeight() . 'px;"';
+				}
+				?>
+			<div class="product small">
+				<a href="<?php echo $_product->getProductUrl(); ?>">
+				  <div class="product-image">
+					<?php echo $productImage->toHtml()  ?>
+				  </div>
+				  <div class="product-text">
+					 <?= $imageBlock ->getReviewsSummaryHtml($_product, $templateType) ?>
+					<h2 class="h3"><a href="<?php echo $_product->getProductUrl(); ?>"><?php /* @escapeNotVerified */ echo $_product->getName(); ?></a></h2>
+					<p class="show-for-medium">"Rich earthy flavours and fresh acidity from the Lagrein mingles with sweet, red cherry and spice of the Dolcetto."</p>
+					<?php echo $block->getProductPricetoHtml($_product); ?>
+				  </div>
+				</a>
+			</div>
+		    <?php endforeach ?>
+		</div>
+		<div id="owl-nav-3" class="owl-nav">
+		</div>
+	</div>
+</div>
+
+<?php if (!$block->isRedirectToCartEnabled()) : ?>
+<script type="text/x-magento-init">
+    {
+        "[data-role=tocart-form], .form.map.checkout": {
+            "catalogAddToCart": {}
+        }
+    }
+</script>
+<?php endif; ?>
